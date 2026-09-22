@@ -42,9 +42,63 @@ Resonite's renderer can crash when a monitor is connected or disconnected while 
 
 ## Installation
 
-1. Install [ResoniteModLoader](https://github.com/resonite-modding-group/ResoniteModLoader).
-1. Place [MultiDesktopCaptureMod.dll](https://github.com/DrSciCortex/MultiDesktopCaptureMod/releases/latest/download/MultiDesktopCaptureMod.dll) into your `rml_mods` folder. This folder should be at `C:\Program Files (x86)\Steam\steamapps\common\Resonite\rml_mods` for a default install. You can create it if it's missing, or if you launch the game once with ResoniteModLoader installed it will create this folder for you.
-1. Start the game. If the repair runs you will see `Desktop screen has no contents … rebuilding it` in your Resonite log.
+There are no prebuilt releases. You build the mod yourself, which takes about a minute.
+
+### What you need
+
+- **Resonite**, installed. The build compiles against the game's own `FrooxEngine.dll`, `Elements.Core.dll`, `SkyFrost.Base.dll` and `SkyFrost.Base.Models.dll`, so it needs to find your Resonite folder.
+- **[ResoniteModLoader](https://github.com/resonite-modding-group/ResoniteModLoader)**, installed in that Resonite.
+- **The [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0).** Check with `dotnet --list-sdks`; you want a `10.0.x` line. The runtime alone is not enough.
+- **git**, or download the repository as a ZIP from GitHub.
+
+The ResoniteModLoader and Harmony packages the build references are downloaded from nuget.org automatically the first time you build.
+
+### Build and install
+
+1. **Close Resonite.** While it is running it keeps the mod file locked, and the build cannot replace it.
+1. Get the source:
+   ```
+   git clone https://github.com/DrSciCortex/MultiDesktopCaptureMod.git
+   cd MultiDesktopCaptureMod
+   ```
+1. Build it:
+   ```
+   dotnet build MultiDesktopCaptureMod.slnx -c Release
+   ```
+   For a default Steam install (`C:\Program Files (x86)\Steam\steamapps\common\Resonite\` on Windows, `~/.steam/steam/steamapps/common/Resonite/` on Linux) that is all. The build finds Resonite and copies `MultiDesktopCaptureMod.dll` straight into its `rml_mods` folder.
+1. Start Resonite. The mod loaded if your Resonite log contains `Loaded mod [MultiDesktopCaptureMod/…]`. If the empty Desktop screen repair runs, you will also see `Desktop screen has no contents … rebuilding it`.
+
+### Resonite somewhere else
+
+Pass the folder that contains `FrooxEngine.dll`. Use forward slashes and keep the trailing slash, since the build appends file names directly to it:
+
+```
+dotnet build MultiDesktopCaptureMod.slnx -c Release "-p:ResonitePath=D:/Games/Resonite/"
+```
+
+### Building without installing
+
+Add `-p:CopyToMods=false`. The DLL is then left at `MultiDesktopCaptureMod/bin/Release/net10.0/MultiDesktopCaptureMod.dll`, and you copy it into `rml_mods` yourself.
+
+### Updating
+
+Close Resonite, then pull and rebuild:
+
+```
+git pull
+dotnet build MultiDesktopCaptureMod.slnx -c Release
+```
+
+### Troubleshooting
+
+- **`warning MSB3026: Could not copy … The file is locked by: "Renderite.Host"`.** Resonite is still running, so the copy failed and the old version is still installed. The build itself succeeded. Close Resonite and build again. Check Task Manager for a leftover `Renderite.Host` process if the window is already gone.
+- **Lots of `error CS0246: The type or namespace name 'DesktopScreen' could not be found`** (or `DesktopControlDialog`, `Display` and so on). The build could not find Resonite. Pass `-p:ResonitePath` as above.
+- **`NETSDK1045: The current .NET SDK does not support targeting .NET 10.0`.** Install the .NET 10 SDK.
+- **The mod does not appear in the log.** Make sure ResoniteModLoader itself is loading: its lines start with `[ResoniteModLoader]`. If you manage mods with a mod manager such as Resolute, check that it points at the same Resonite folder you actually launch. It is easy to end up installing into a different copy.
+
+### Changing settings
+
+Install [ResoniteModSettings](https://github.com/badhaloninja/ResoniteModSettings) to change the settings below from the dash. Without it, edit `rml_config/MultiDesktopCaptureMod.json` in your Resonite folder while the game is closed. ResoniteModLoader only creates that file once a setting has been changed from its default.
 
 ## Configuration
 
@@ -63,11 +117,3 @@ Resonite's renderer can crash when a monitor is connected or disconnected while 
 ## Fixing it without the mod
 
 Launching Resonite once with the `-ResetDash` argument also fixes it, by discarding the saved dash and regenerating it from defaults. The trade-off is that it resets your **whole** dash — your top-bar facets and any screen customisation go back to defaults — whereas this mod repairs only the Desktop screen. If you do use `-ResetDash`, run it from Windows; resetting from a Linux install recreates the same empty screen.
-
-## Building
-
-```
-dotnet build MultiDesktopCaptureMod.slnx
-```
-
-The project locates Resonite automatically for a default Steam install on Windows or Linux; otherwise pass `-p:ResonitePath=<path>`. Builds are copied into `rml_mods` by default — pass `-p:CopyToMods=false` to skip that.
