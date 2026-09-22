@@ -1,3 +1,5 @@
+// Copyright (c) 2026 DrSciCortex
+
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Elements.Core;
