@@ -1,0 +1,9 @@
+{
+  "localeCode": "en",
+  "authors": ["DrSciCortex"],
+  "messages": {
+    "MultiDesktopCaptureMod.ShareScreen": "Share Screen {n}<sup><color=hero.red>BETA",
+    "MultiDesktopCaptureMod.StopSharingScreen": "Stop Sharing Screen {n}",
+    "MultiDesktopCaptureMod.LocalOnly": "Local only (visible just to you)"
+  }
+}

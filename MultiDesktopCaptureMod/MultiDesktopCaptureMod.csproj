@@ -24,6 +24,9 @@
 		<PackageReference Include="ResoniteModLoader" Version="5.0.1" />
 		<PackageReference Include="Lib.Harmony" Version="2.4.2" />
 		<Reference Include="FrooxEngine" HintPath="$(ResonitePath)FrooxEngine.dll" />
+		<Reference Include="SkyFrost.Base" HintPath="$(ResonitePath)SkyFrost.Base.dll" />
+		<Reference Include="SkyFrost.Base.Models" HintPath="$(ResonitePath)SkyFrost.Base.Models.dll" />
+		<Reference Include="Elements.Core" HintPath="$(ResonitePath)Elements.Core.dll" />
 	</ItemGroup>
 
 	<ItemGroup>
